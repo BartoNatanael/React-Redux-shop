@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { Provider } from "react-redux";
 import './App.css';
 import Products from './components/Products';
-import Filter from './components/Filter'
+import Filter from './components/Filter';
+import Basket from './components/Basket';
+import store from './store'
 
 class App extends Component {
   constructor(props){
@@ -11,17 +14,26 @@ class App extends Component {
         filteredProducts:[],
         sort: '',
         size: '',
-        cartItem: []
+        cartItems: []
     };
     this.handleChangeSort = this.handleChangeSort.bind(this)
+    this.handleAddToCart = this.handleAddToCart.bind(this)
+    this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this)
 }
-  componentWillMount(){
-    fetch("http://localhost:8000/products").then(res => res.json())
-    .then(data => this.setState({
-      products: data,
-      filteredProducts: data
-    }))
-  }
+
+// componentWillMount() {
+//   console.log(this.state.filteredProducts)
+//   if (localStorage.getItem('cartItems')) {
+//     this.setState({ cartItems: JSON.parse(localStorage.getItem('cartItems')) });
+//   }
+
+//   fetch('http://localhost:8000/products').then(res => res.json())
+//     .catch(err => fetch('db.json').then(res => res.json()).then(data => data.products))
+//     .then(data => {
+//       this.setState({ products: data });
+//       this.listProducts();
+//     });
+// }
 
   handleChangeSort(e){
     this.setState({
@@ -29,6 +41,7 @@ class App extends Component {
     });
     this.listProducts();
   }
+  
 
   listProducts = () => {
     this.setState(state => {
@@ -46,38 +59,61 @@ class App extends Component {
       return { filteredProducts: state.products };
     })
   }
-  handleSortChange = (e) => {
-    this.setState({ sort: e.target.value });
-    this.listProducts();
+
+  handleAddToCart(e,product){
+    this.setState(state=>{
+      const cartItems = state.cartItems;
+      let productAlreadyInCart = false;
+      cartItems.forEach(item=>{
+        if(item.id === product.id){
+          productAlreadyInCart = true;
+          item.count++;
+        }
+      });
+      if(!productAlreadyInCart){
+        cartItems.push({ ...product, count: 1 });
+      }
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      return cartItems
+    })
   }
-  handleSizeChange = (e) => {
-    this.setState({ size: e.target.value });
-    this.listProducts();
+
+  handleRemoveFromCart = (e, product) => {
+    this.setState(state => {
+      const cartItems = state.cartItems.filter(a => a.id !== product.id);
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      return { cartItems: cartItems };
+    })
   }
+ 
+  
 
   render(){
     return (
-      <div className="container">
-        <h1>Ecommerce Shopping Cart Application</h1>
-        <hr/>
-        <div className="row">
-          <div className="col-md-8">
-            <Filter size={this.state.size}
-            sort={this.state.sort}
-            count={this.state.filteredProducts.length}
-            handleChangeSize={this.handleChangeSize}
-            handleChangeSort={this.handleChangeSort}
-            />
-            <hr/>
-            <Products 
-            products={this.state.filteredProducts} handleAddToCart={this.handleAddToCart} />
+      <Provider store={store}>
+        <div className="container">
+          <h1>Ecommerce Shopping Cart Application</h1>
+          <hr/>
+          <div className="row">
+            <div className="col-md-8">
+              <Filter size={this.state.size}
+              sort={this.state.sort}
+              count={this.state.filteredProducts.length}
+              handleChangeSize={this.handleChangeSize}
+              handleChangeSort={this.handleChangeSort}
+              />
+              <hr/>
+              <Products products={this.state.filteredItems} handleAddToCart={this.handleAddToCart} />
+            </div>
+            <div className='col-md-4'>
+              <Basket 
+              cartItems={this.state.cartItems}
+              handleRemoveFromCart={this.handleRemoveFromCart}/>
+            </div>
           </div>
-          <div className='col-md-4'>
-
-          </div>
+          
         </div>
-        
-      </div>
+      </Provider>
     );
   }
 }

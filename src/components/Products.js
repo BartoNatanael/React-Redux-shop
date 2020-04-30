@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import util from "../util";
+import { connect } from 'react-redux';
+import { fetchProducts } from '../actions/productActions';
 
-export default class Products extends Component {
+class Products extends Component {
+   componentWillMount(){
+    fetchProducts();
+ 
+   }
    
     render(){
-        const productsItems = this.props.products.map( product =>(
+        const productItems = this.props.products.map((product) => (
             <div className="col-md-4 mb-4" key={product.id}>
                 <div className="thumbnail text-center bg-secondary">
                     <a 
@@ -29,8 +35,14 @@ export default class Products extends Component {
         )
         return(
             <div className="row">
-                {productsItems}
+                {productItems}
             </div>
         )
     }
 }
+const mapStateToProps = (state) => ({
+    products: state.products.filteredItems,
+    // cartItems: state.cart.items,
+  });
+
+export default connect(mapStateToProps,(fetchProducts))(Products)
