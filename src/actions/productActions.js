@@ -12,10 +12,12 @@ export const fetchProducts = () => (dispatch) => {
           .then((data) => data.products)
       )
       .then((data) => {
-        dispatch({ type: FETCH_PRODUCTS, payload: data });
+        dispatch({ type: FETCH_PRODUCTS, payload: data });console.log(data)
       });
+      
   };
 
+  
   export const filterProducts = (products, size) => (dispatch) => {
 
     dispatch({

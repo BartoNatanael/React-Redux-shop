@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import util from '../util';
+import { connect } from 'react-redux';
+import { removeFromCart } from '../actions/cartActions';
 
 let id = 0;
 
-export default class Basket extends Component {
+class Basket extends Component {
     render() {
         const {cartItems} = this.props
         return(
@@ -16,7 +18,7 @@ export default class Basket extends Component {
                                     <b>{item.title} </b>
                                      X {item.count / 2} = {util.formatCurrency(item.price * item.count / 2)}
                                     <button className="btn btn-danger"
-                                    onClick={(e) => this.props.handleRemoveFromCart(e, item)}>
+                                    onClick={() => this.props.removeFromCart(this.props.cartItems, item)}>
                                         X
                                     </button>
                                 </li>
@@ -30,3 +32,8 @@ export default class Basket extends Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    cartItems: state.cart.items
+})
+export default connect(mapStateToProps, {removeFromCart})(Basket)
