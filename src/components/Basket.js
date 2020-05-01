@@ -16,7 +16,7 @@ class Basket extends Component {
                             {cartItems.map(item => 
                                 <li key={id++}>
                                     <b>{item.title} </b>
-                                     X {item.count / 2} = {util.formatCurrency(item.price * item.count / 2)}
+                                     X {item.count} = {util.formatCurrency(item.price * item.count)}
                                     <button className="btn btn-danger"
                                     onClick={() => this.props.removeFromCart(this.props.cartItems, item)}>
                                         X
@@ -24,7 +24,7 @@ class Basket extends Component {
                                 </li>
                             )}
                         </ul>
-                        Total: {util.formatCurrency( cartItems.reduce((a,c)=> a +c.price*c.count/2, 0))}
+                        Total: {util.formatCurrency( cartItems.reduce((a,c)=> a +c.price*c.count, 0))}
                     </div>
                 </div>
                 }
