@@ -18,7 +18,7 @@ class Products extends Component {
                         href={`#${product.id}`} 
                         onClick={()=>this.props.addToCart(this.props.cartItems, product)}
                     >
-                        <img src={`/products/${product.sku}_2.jpg`} alt={product.title}/>
+                        <img src={`React-Redux-shop/products/${product.sku}_2.jpg`} alt={product.title}/>
                         <p>
                             {product.title}
                         </p>
