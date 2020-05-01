@@ -11,7 +11,7 @@ class Filter extends Component {
                 </div>
                 <div className="col-md-4">
                     <label>Order by
-               <select className="form-control" value={this.props.sort} onChange={(e)=>this.props.sortProducts(this.props.products, e.target.value)}>
+               <select className="form-control" value={this.props.sort} onChange={(e)=>this.props.sortProducts(this.props.filteredProducts, e.target.value)}>
                             <option value="">Select</option>
                             <option value="lowestprice">Lowest to highest</option>
                             <option value="highestprice">Highest to lowest</option>
@@ -39,7 +39,7 @@ class Filter extends Component {
 
 const mapStateToProps = state => ({
     products: state.products.items,
-    filterProducts: state.products.filteredItems,
+    filteredProducts: state.products.filteredItems,
     size: state.products.size,
     sort: state.products.sort
 })
